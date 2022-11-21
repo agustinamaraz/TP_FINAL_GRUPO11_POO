@@ -111,9 +111,12 @@ public class Principal {
 				if(u.getRol().getDescripcion().equals("Vendedor")) {
 					do {
 						System.out.println("\n------------------ MENÚ VENDEDOR ----------------");
-						System.out.println("1. Realizar venta");
-						System.out.println("2. Mostrar facturas");
-						System.out.println("3. Salir");
+						System.out.println("1. Alta de cliente");
+						System.out.println("2. Realizar venta");
+						System.out.println("3. Mostrar todos los clientes cargados");
+						System.out.println("4. Mostrar todas las facturas realizadas");
+						System.out.println("5. Buscar una factura por numero de factura");
+						System.out.println("6. Salir");
 						System.out.println("Ingrese opción: ");
 						opcion = scanner.nextInt();
 						
@@ -183,17 +186,50 @@ public class Principal {
 							
 							break;
 						case 3:
-							System.out.println("saliendo del programa");
+													
+							break;
+						case 4:
+							
+							break;
+						case 5:
+							
+							break;
+						case 6:
+							System.out.println("Usted ha salido del programa");
 							break;
 
 						default:
-							System.out.println("opcion incorrecta");
+							System.out.println("opción incorrecta");
+							break;
+						}
+						
+					}while(opcion!=6);
+				}else if(u.getRol().getDescripcion().equals("Cliente")){
+					do {
+						System.out.println("\n------------------ MENÚ CLIENTE ----------------");
+						System.out.println("1. Buscar una factura por número de factura");
+						System.out.println("2. Mostrar todas mis facturas");
+						System.out.println("3. Salir");
+						System.out.println("Ingrese opción: ");
+						opcion = scanner.nextInt();
+						
+						switch (opcion) {
+						case 1:
+							
+							break;
+						case 2:
+							
+							break;
+						case 3:
+							System.out.println("Usted ha salido del programa");
+							break;
+
+						default:
+							System.out.println("opción incorrecta");
 							break;
 						}
 						
 					}while(opcion!=3);
-				}else if(u.getRol().getDescripcion().equals("Cliente")){
-					System.out.println("usted es cliente");
 				}
 				
 			}

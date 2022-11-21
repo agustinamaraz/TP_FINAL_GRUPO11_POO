@@ -18,7 +18,7 @@ import javax.persistence.Table;
 public class Usuario implements Serializable{
 	private static final long serialVersionUID = 1L;
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long idUsuario;
 	@Column(name = "dni",nullable=true,unique=true)
 	private int dni;
@@ -57,14 +57,6 @@ public class Usuario implements Serializable{
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
-	}
-
-	public Long getIdUsuario() {
-		return idUsuario;
-	}
-
-	public void setIdUsuario(Long idUsuario) {
-		this.idUsuario = idUsuario;
 	}
 
 	public int getDni() {
