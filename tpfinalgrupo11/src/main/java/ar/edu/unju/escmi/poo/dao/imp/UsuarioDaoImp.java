@@ -57,11 +57,17 @@ public class UsuarioDaoImp implements IUsuarioDao {
 
 	@Override
 	public Usuario obtenerUsuarioPorCredenciales(String email) {
-		@SuppressWarnings("unchecked")
 		Query query = manager.createQuery("SELECT u FROM Usuario u " + "WHERE u.email = :email");
 		query.setParameter("email", email);
 		Usuario usuario = (Usuario) query.getSingleResult();
 		return usuario;
+	}
+
+	@Override
+	public List<Usuario> obtenerUsuariosClientes() {
+		@SuppressWarnings("unchecked")
+		List<Usuario> clientes = (List<Usuario>) manager.createQuery("SELECT u FROM Usuario u" + " WHERE u.rol.descripcion = 'Cliente'").getResultList();
+		return clientes;
 	}
 
 }
