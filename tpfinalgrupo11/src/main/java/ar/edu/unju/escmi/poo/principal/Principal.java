@@ -1,6 +1,7 @@
 package ar.edu.unju.escmi.poo.principal;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -10,11 +11,13 @@ import ar.edu.unju.escmi.poo.dao.IDetalleDao;
 import ar.edu.unju.escmi.poo.dao.IFacturaDao;
 import ar.edu.unju.escmi.poo.dao.IProductoDao;
 import ar.edu.unju.escmi.poo.dao.IRolDao;
+import ar.edu.unju.escmi.poo.dao.IStockDao;
 import ar.edu.unju.escmi.poo.dao.IUsuarioDao;
 import ar.edu.unju.escmi.poo.dao.imp.DetalleDaoImp;
 import ar.edu.unju.escmi.poo.dao.imp.FacturaDaoImp;
 import ar.edu.unju.escmi.poo.dao.imp.ProductoDaoImp;
 import ar.edu.unju.escmi.poo.dao.imp.RolDaoImp;
+import ar.edu.unju.escmi.poo.dao.imp.StockDaoImp;
 import ar.edu.unju.escmi.poo.dao.imp.UsuarioDaoImp;
 import ar.edu.unju.escmi.poo.dominio.Detalle;
 import ar.edu.unju.escmi.poo.dominio.Factura;
@@ -32,7 +35,7 @@ public class Principal {
 		// PRECARGA DE DATOS A MODO DE PRUEBA, DESCOMENTAR SI SE CREA POR PRIMERA VEZ
 		
 		
-		IRolDao rolDao = new RolDaoImp();
+		/*IRolDao rolDao = new RolDaoImp();
 		
 		Rol r = new Rol();
 		r.setDescripcion("Vendedor");
@@ -87,11 +90,17 @@ public class Principal {
 		p2.setOrigen("argentina");
 		p2.setPrecioUnitario(200);
 		
-		producto.agregarProducto(p2);
+		producto.agregarProducto(p2);*/
 		
 		
 		IFacturaDao facturaDao = new FacturaDaoImp();
-
+		IDetalleDao detalleDao = new DetalleDaoImp();
+		IUsuarioDao usuarioDao = new UsuarioDaoImp();
+		IProductoDao productoDao = new ProductoDaoImp();
+		IRolDao rolDao = new RolDaoImp();
+		IStockDao stockDao = new StockDaoImp();
+		
+		Usuario usuario = new Usuario();
 		
 		
 		do {
@@ -101,33 +110,65 @@ public class Principal {
 			System.out.println("Ingrese su contraseña: ");
 			contrasena = scanner.next();
 
-			u = usuarioDao.obtenerUsuarioPorCredenciales(email); //falta agregar contrasena en el metodo 
+			usuario = usuarioDao.obtenerUsuarioPorCredenciales(email); //falta agregar contrasena en el metodo 
 
-			if (u == null) {
+			if (usuario == null) {
 				System.out.println("¡UPS! Usted no se encuentra registrado en el sistema");
 			}else {
-				System.out.println(u);
+				System.out.println(usuario);
 				
-				if(u.getRol().getDescripcion().equals("Vendedor")) {
+				if(usuario.getRol().getDescripcion().equals("Vendedor")) {
 					do {
 						System.out.println("\n------------------ MENÚ VENDEDOR ----------------");
-						System.out.println("1. Realizar venta");
-						System.out.println("2. Mostrar facturas");
-						System.out.println("3. Salir");
+						System.out.println("1. Alta de cliente");
+						System.out.println("2. Realizar venta");
+						System.out.println("3. Mostrar todos los clientes cargados");
+						System.out.println("4. Mostrar todas las facturas realizadas");
+						System.out.println("5. Buscar una factura por numero de factura");
+						System.out.println("6. Salir");
 						System.out.println("Ingrese opción: ");
 						opcion = scanner.nextInt();
 						
 						switch (opcion) {
 						case 1:
+							Usuario nuevoUsuario = new Usuario();
+							System.out.println("Ingrese dni");
+							nuevoUsuario.setDni(scanner.nextInt());
+							System.out.println("Ingrese nombre");
+							nuevoUsuario.setNombre(scanner.next());
+							System.out.println("Ingrese apellido");
+							nuevoUsuario.setApellido(scanner.next());
+							System.out.println("Ingrese domicilio");
+							nuevoUsuario.setDomicilio(scanner.next());
+							System.out.println("Ingrese fecha de nacimiento (dd/mm/yyyy)");
+							String fechaNac = scanner.next();
+							DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+							nuevoUsuario.setFechaNacimiento(LocalDate.parse(fechaNac, formato));
+							System.out.println("Ingrese correo electrónico");
+							nuevoUsuario.setEmail(scanner.next());
+							System.out.println("Ingrese contreña");
+							nuevoUsuario.setContrasena(scanner.next());
+							nuevoUsuario.setRol(rolDao.buscarRolPorId(2L));
+							
+							usuarioDao.agregarUsuario(nuevoUsuario);
+							
+							break;
+						case 2:
+							
+							System.out.println("*********** LISTA DE USUARIOS PARA REALIZAR VENTA ***********");
+							System.out.println(usuarioDao.obtenerUsuariosClientes());
+							System.out.println("\nIngrese el Id del usuario al que desea realizar la venta: ");
+							usuario = usuarioDao.obtenerUsuario(scanner.nextLong());
+							
 							
 							Factura factura = new Factura();
 							factura.setNumeroFactura((int)(Math. random()*100+1));
-							factura.setUsuario(u);
+							factura.setUsuario(usuario);
 							factura.setFecha(LocalDate.now());
 							
-							IDetalleDao detalleDao = new DetalleDaoImp();
 							
-							List<Detalle> lineas = new ArrayList<Detalle>();
+							
+							//List<Detalle> lineas = new ArrayList<Detalle>();
 							
 							do {
 								
@@ -136,10 +177,10 @@ public class Principal {
 								detalle.setFactura(factura);
 								
 								System.out.println("--------------- LISTA DE PRODUCTOS A LA VENTA ---------------");
-								producto.obtenerProductos().stream().forEach(System.out::println);
+								productoDao.obtenerProductos().stream().forEach(System.out::println);
 								System.out.println("\nDigite codigo del producto que desea comprar: ");
 								Long codigo = scanner.nextLong();
-								Producto prod = producto.obtenerProducto(codigo);
+								Producto prod = productoDao.obtenerProducto(codigo);
 								
 								if(prod==null) {
 									System.out.println("¡¡EL CODIGO NO COINCIDE CON NINGUNO PRODUCTO!!");
@@ -154,11 +195,11 @@ public class Principal {
 											detalle.setProducto(prod);
 											detalle.setImporte(detalle.calcularImporte());
 											
-											lineas.add(detalle);
+											//lineas.add(detalle);
 											
-											factura.setDetalles(lineas);
+											//factura.setDetalles(lineas);
 											
-											
+											factura.agregarDetalle(detalle);
 											
 										
 										//}
@@ -169,7 +210,7 @@ public class Principal {
 										System.out.println("\n\n");
 										
 										
-										facturaDao.agregarFactura(factura); // aca sucede el error
+										facturaDao.agregarFactura(factura);
 										detalleDao.agregarDetalle(detalle);
 								}
 								
@@ -179,21 +220,58 @@ public class Principal {
 							
 							
 							break;
+						case 3:
+							System.out.println(usuarioDao.obtenerUsuariosClientes());
+							break;
+						case 4:
+							System.out.println(facturaDao.obtenerFacturas());
+							break;
+						case 5:
+							System.out.println("Digite el numero de factura: ");
+							Factura encontrada = new Factura();
+							encontrada=facturaDao.buscarFacturaPorNumeroFactura(scanner.nextInt());
+							if(encontrada==null){
+								System.out.println("La factura ingresada no existe");
+							}else {
+								System.out.println(encontrada);
+							}
+							break;
+						case 6:
+							System.out.println("Usted ha salido del programa");
+							break;
+
+						default:
+							System.out.println("opción incorrecta");
+							break;
+						}
+						
+					}while(opcion!=6);
+				}else if(usuario.getRol().getDescripcion().equals("Cliente")){
+					do {
+						System.out.println("\n------------------ MENÚ CLIENTE ----------------");
+						System.out.println("1. Buscar una factura por número de factura");
+						System.out.println("2. Mostrar todas mis facturas");
+						System.out.println("3. Salir");
+						System.out.println("Ingrese opción: ");
+						opcion = scanner.nextInt();
+						
+						switch (opcion) {
+						case 1:
+							
+							break;
 						case 2:
 							
 							break;
 						case 3:
-							System.out.println("saliendo del programa");
+							System.out.println("Usted ha salido del programa");
 							break;
 
 						default:
-							System.out.println("opcion incorrecta");
+							System.out.println("opción incorrecta");
 							break;
 						}
 						
 					}while(opcion!=3);
-				}else if(u.getRol().getDescripcion().equals("Cliente")){
-					System.out.println("usted es cliente");
 				}
 				
 			}

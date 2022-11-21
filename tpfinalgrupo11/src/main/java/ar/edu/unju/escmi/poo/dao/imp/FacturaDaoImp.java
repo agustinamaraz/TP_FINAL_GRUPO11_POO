@@ -3,6 +3,7 @@ package ar.edu.unju.escmi.poo.dao.imp;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 
 import ar.edu.unju.escmi.poo.dao.IFacturaDao;
 import ar.edu.unju.escmi.poo.dominio.Factura;
@@ -13,20 +14,22 @@ public class FacturaDaoImp implements IFacturaDao{
 	
 	@Override
 	public void agregarFactura(Factura nuevaFactura) {
-		//try {
+		try {
 			manager.getTransaction().begin();
 			manager.persist(nuevaFactura);
 			manager.getTransaction().commit();
-		//}catch(Exception e) {
-			//System.out.println(e);
-		//}
+		}catch(Exception e) {
+			System.out.println(e);
+		}
 		
 	}
 
 	@Override
-	public Factura buscarFacturaPorCodigo(int codigo) {
-		// TODO Auto-generated method stub
-		return manager.find(Factura.class, codigo);
+	public Factura buscarFacturaPorNumeroFactura(int nroFactura) {
+		Query query = manager.createQuery("SELECT f FROM Factura f" + " WHERE f.numeroFactura = :nroFactura");
+		query.setParameter("nroFactura", nroFactura);
+		Factura factura = (Factura) query.getSingleResult();
+		return factura;
 	}
 
 	@Override

@@ -7,7 +7,7 @@ import ar.edu.unju.escmi.poo.dominio.Factura;
 public interface IFacturaDao {
 	
 	public void agregarFactura(Factura nuevaFactura);
-	public Factura buscarFacturaPorCodigo(int codigo);
+	public Factura buscarFacturaPorNumeroFactura(int nroFactura);
 	public List<Factura> obtenerFacturas();
 	
 }
