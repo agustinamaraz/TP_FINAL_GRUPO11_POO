@@ -54,6 +54,14 @@ public class Usuario implements Serializable{
 		this.contrasena = contrasena;
 		this.rol = rol;
 	}
+	
+	public Long getIdUsuario() {
+		return idUsuario;
+	}
+
+	public void setIdUsuario(Long idUsuario) {
+		this.idUsuario = idUsuario;
+	}
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;

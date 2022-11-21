@@ -12,6 +12,6 @@ public interface IUsuarioDao {
 	public List<Usuario> obtenerUsuariosClientes();
 	public void modificarUsuario(Usuario usuario);
 	public Usuario obtenerUsuario(Long idUsuario);
-	public Usuario obtenerUsuarioPorCredenciales(String email);
+	public Usuario obtenerUsuarioPorCredenciales(String email,String contra);
 	
 }

@@ -34,14 +34,15 @@ public class Producto implements Serializable{
 		// TODO Auto-generated constructor stub
 	}
 	
-	public Producto(String descripcion, String marca, String origen, String categoria, int descuento, double precioUnitario) {
+	public Producto( String categoria, String descripcion, double precioUnitario, String origen, String marca,int descuento) {
 		super();
-		this.descripcion = descripcion;
-		this.marca = marca;
-		this.origen = origen;
 		this.categoria = categoria;
-		this.descuento = descuento;
+		this.descripcion = descripcion;
 		this.precioUnitario = precioUnitario;
+		this.origen = origen;
+		this.marca = marca;
+		this.descuento = descuento;
+		
 	}
 	public Long getidProducto() {
 		return idProducto;

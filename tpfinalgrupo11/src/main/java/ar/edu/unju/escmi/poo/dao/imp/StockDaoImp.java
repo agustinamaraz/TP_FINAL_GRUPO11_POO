@@ -1,8 +1,7 @@
 package ar.edu.unju.escmi.poo.dao.imp;
 
-import java.util.List;
-
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 
 import ar.edu.unju.escmi.poo.config.EmfSingleton;
 import ar.edu.unju.escmi.poo.dao.IStockDao;
@@ -24,15 +23,32 @@ public class StockDaoImp implements IStockDao {
 	}
 
 	@Override
-	public List<Stock> buscarStocks() {
+	public Stock buscarStockPorId(Long id) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Stock buscarStockPorId(Long id) {
-		// TODO Auto-generated method stub
-		return null;
+	public Stock buscarStockPorIdProducto(Long idProducto) {
+		Query query = manager.createQuery("SELECT s FROM Stock s WHERE s.producto.idProducto = :idProducto");
+		query.setParameter("idProducto", idProducto);
+		Stock stock = (Stock)query.getSingleResult();
+		return stock;
+	}
+
+	@Override
+	public boolean decrementarStock(Stock stock, int cantidad) {
+		if(stock.getCantidad()-cantidad >= 0) {
+			stock.setCantidad(stock.getCantidad()-cantidad);
+			
+			manager.getTransaction().begin();
+			manager.merge(stock);
+			manager.getTransaction().commit();
+			return true;
+		}else {
+			return false;
+		}
+	
 	}
 
 }
