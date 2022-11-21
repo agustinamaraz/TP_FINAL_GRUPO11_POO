@@ -56,9 +56,10 @@ public class UsuarioDaoImp implements IUsuarioDao {
 	}
 
 	@Override
-	public Usuario obtenerUsuarioPorCredenciales(String email) {
-		Query query = manager.createQuery("SELECT u FROM Usuario u " + "WHERE u.email = :email");
+	public Usuario obtenerUsuarioPorCredenciales(String email,String contra) {
+		Query query = manager.createQuery("SELECT u FROM Usuario u WHERE u.email = :email AND u.contrasena = :contra");
 		query.setParameter("email", email);
+		query.setParameter("contra", contra);
 		Usuario usuario = (Usuario) query.getSingleResult();
 		return usuario;
 	}

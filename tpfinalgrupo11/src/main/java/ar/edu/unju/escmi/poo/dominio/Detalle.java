@@ -100,7 +100,7 @@ public class Detalle implements Serializable{
 
 	@Override
 	public String toString() {
-		return "Detalle [Descripcion= " + producto.getDescripcion() + " cantidad=" + cantidad + ", Precio Unitario=" + producto.getPrecioUnitario() + ", IMPORTE="
+		return "Detalle [Descripcion= " + producto.getDescripcion()+ producto.getDescuento()+ " cantidad=" + cantidad + ", Precio Unitario=" + producto.getPrecioUnitario() + ", IMPORTE="
 				+ importe + "]";
 	}
 }

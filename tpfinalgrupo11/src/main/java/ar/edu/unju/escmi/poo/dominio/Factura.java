@@ -95,8 +95,8 @@ public class Factura implements Serializable{
 		return usuario;
 	}
 
-	public void setUsuario(Usuario Usuario) {
-		this.usuario = Usuario;
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
 	}
 	
 	public double getTotal() {

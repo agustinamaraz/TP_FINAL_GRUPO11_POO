@@ -2,10 +2,9 @@ package ar.edu.unju.escmi.poo.principal;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
+import javax.persistence.NoResultException;
 
 import ar.edu.unju.escmi.poo.dao.IDetalleDao;
 import ar.edu.unju.escmi.poo.dao.IFacturaDao;
@@ -23,85 +22,116 @@ import ar.edu.unju.escmi.poo.dominio.Detalle;
 import ar.edu.unju.escmi.poo.dominio.Factura;
 import ar.edu.unju.escmi.poo.dominio.Producto;
 import ar.edu.unju.escmi.poo.dominio.Rol;
+import ar.edu.unju.escmi.poo.dominio.Stock;
 import ar.edu.unju.escmi.poo.dominio.Usuario;
 
 public class Principal {
 
 	public static void main(String[] args) {
-		Scanner scanner = new Scanner(System.in);
-		String seguir=null,email,contrasena;
-		int opcion=0;
-		
-		// PRECARGA DE DATOS A MODO DE PRUEBA, DESCOMENTAR SI SE CREA POR PRIMERA VEZ
-		
-		
-		/*IRolDao rolDao = new RolDaoImp();
-		
-		Rol r = new Rol();
-		r.setDescripcion("Vendedor");
-		rolDao.agregarRol(r);
-		Rol r2 = new Rol();
-		r2.setDescripcion("Cliente");
-		rolDao.agregarRol(r2);
 		
 		IUsuarioDao usuarioDao = new UsuarioDaoImp();
-		
-		Usuario u = new Usuario();
-		u.setApellido("maraz");
-		u.setNombre("agustina");
-		u.setDomicilio("alto comedero");
-		u.setFechaNacimiento(LocalDate.of(2003, 07, 26));
-		u.setDni(44949820);
-		u.setEmail("agus@com");
-		u.setContrasena("123");
-		u.setRol(rolDao.buscarRolPorId(1L));
-		
-		usuarioDao.agregarUsuario(u);
-		
-		Usuario u2 = new Usuario();
-		u2.setApellido("fernandez");
-		u2.setNombre("daiana");
-		u2.setDomicilio("gorriti");
-		u2.setFechaNacimiento(LocalDate.of(2003, 07, 27));
-		u2.setDni(44949821);
-		u2.setEmail("dai@com");
-		u2.setContrasena("123");
-		u2.setRol(rolDao.buscarRolPorId(2L));
-		
-		usuarioDao.agregarUsuario(u2);
-		
-		IProductoDao producto = new ProductoDaoImp();
-		
-		Producto p1 = new Producto();
-		p1.setCategoria("fruta");
-		p1.setDescripcion("banana");
-		p1.setDescuento(0);
-		p1.setMarca("xd");
-		p1.setOrigen("argentina");
-		p1.setPrecioUnitario(100);
-		
-		producto.agregarProducto(p1);
-		
-		Producto p2 = new Producto();
-		p2.setCategoria("fruta");
-		p2.setDescripcion("manzana");
-		p2.setDescuento(0);
-		p2.setMarca("zy");
-		p2.setOrigen("argentina");
-		p2.setPrecioUnitario(200);
-		
-		producto.agregarProducto(p2);*/
-		
-		
+		IRolDao rolDao = new RolDaoImp();
+		IProductoDao productoDao = new ProductoDaoImp();
+		IStockDao stockDao = new StockDaoImp();
 		IFacturaDao facturaDao = new FacturaDaoImp();
 		IDetalleDao detalleDao = new DetalleDaoImp();
-		IUsuarioDao usuarioDao = new UsuarioDaoImp();
-		IProductoDao productoDao = new ProductoDaoImp();
-		IRolDao rolDao = new RolDaoImp();
-		IStockDao stockDao = new StockDaoImp();
+		
+		/*
+		 * 
+		 * 
+		// PRECARGA DE ROLES
+		
+		Rol rolVendedor = new Rol();
+		rolVendedor.setDescripcion("Vendedor");
+		rolDao.agregarRol(rolVendedor);
+		Rol rolCliente = new Rol();
+		rolCliente.setDescripcion("Cliente");
+		rolDao.agregarRol(rolCliente);
+	
+		// PRECARGA DE PRODUCTOS
+		
+		Producto producto1 = new Producto("Heladera","2 PUERTAS COLOR BLANCA - VERSIÓN INVERTER",60000.0,"ARGENTINA","LG",0);
+		Producto producto2 = new Producto("Heladera","CICLICA",30000.0,"CHIINA","SAMSUNG",0);
+		Producto producto3 = new Producto("Heladera","NO FROST",22200.0,"PERU","CANON",0);
+		Producto producto4 = new Producto("Heladera","Heladera con Freezer 414 lts acero",40000.0,"CHILE","BRIKET",0);
+		Producto producto5 = new Producto("Televisor","TV MOTOROLA 50",30000.0,"ARGENTINA","LG",0);
+		Producto producto6 = new Producto("Televisor","TV.LED 55",49999.0,"PARAGUAY","NOKIA",0);
+		Producto producto7 = new Producto("Televisor","TV.LED 873",55000.0,"ARGENTINA","LG",0);
+		Producto producto8 = new Producto("Televisor","Smart TV 4K 50",20000.0,"ARGENTINA","LG",0);
+		Producto producto9 = new Producto("Lavarropas","Lavarropas semi 7 kgs",20000.0,"BOLIVIA","BRIKET",0);
+		Producto producto10 = new Producto("Lavarropas","NEXT 10·12 P ECO",30000.0,"ARGENTINA","LILIANA",0);
+		Producto producto11 = new Producto("Lavarropas","LAVARROPAS CARGA SUPERIOR DIGI FIT BLANCO",40000.0,"CHILE","BRIKET",0);
+		Producto producto12 = new Producto("Lavarropas","LAVARROPAS CARGA SUPERIOR GAFA FUZZY FIT PLATA",55000.0,"CHINA","Samsung",0);
+		Producto producto13 = new Producto("Celular","SM-A325/4+128",25000.0,"CHINA","XIAOMI",0);
+		Producto producto14 = new Producto("Celular","Moto G52 Negro Azul",30200.0,"ARGENTINA","Motorola",0);
+		Producto producto15 = new Producto("Celular","Smartphone 6",60000.0,"CHINA","Samsung",0);
+		Producto producto16 = new Producto("Celular","Moto G41 Negro Onix",70000.0,"JAPON","Motorola",0);
+		productoDao.agregarProducto(producto1);
+		productoDao.agregarProducto(producto2);
+		productoDao.agregarProducto(producto3);
+		productoDao.agregarProducto(producto4);
+		productoDao.agregarProducto(producto5);
+		productoDao.agregarProducto(producto6);
+		productoDao.agregarProducto(producto7);
+		productoDao.agregarProducto(producto8);
+		productoDao.agregarProducto(producto9);
+		productoDao.agregarProducto(producto10);
+		productoDao.agregarProducto(producto11);
+		productoDao.agregarProducto(producto12);
+		productoDao.agregarProducto(producto13);
+		productoDao.agregarProducto(producto14);
+		productoDao.agregarProducto(producto15);
+		productoDao.agregarProducto(producto16);
+		
+		//PRECARGA DE STOCKS
+		
+		Stock stock1 = new Stock(100,productoDao.obtenerProducto(17L));
+		Stock stock2 = new Stock(100,productoDao.obtenerProducto(18L));
+		Stock stock3 = new Stock(100,productoDao.obtenerProducto(3L));
+		Stock stock4 = new Stock(100,productoDao.obtenerProducto(4L));
+		Stock stock5 = new Stock(100,productoDao.obtenerProducto(5L));
+		Stock stock6 = new Stock(100,productoDao.obtenerProducto(6L));
+		Stock stock7 = new Stock(100,productoDao.obtenerProducto(7L));
+		Stock stock8 = new Stock(100,productoDao.obtenerProducto(8L));
+		Stock stock9 = new Stock(100,productoDao.obtenerProducto(9L));
+		Stock stock10 = new Stock(100,productoDao.obtenerProducto(10L));
+		Stock stock11 = new Stock(100,productoDao.obtenerProducto(11L));
+		Stock stock12 = new Stock(100,productoDao.obtenerProducto(12L));
+		Stock stock13 = new Stock(100,productoDao.obtenerProducto(13L));
+		Stock stock14 = new Stock(100,productoDao.obtenerProducto(14L));
+		Stock stock15 = new Stock(100,productoDao.obtenerProducto(15L));
+		Stock stock16 = new Stock(100,productoDao.obtenerProducto(16L));
+		stockDao.agregarStock(stock1);
+		stockDao.agregarStock(stock2);
+		stockDao.agregarStock(stock3);
+		stockDao.agregarStock(stock4);
+		stockDao.agregarStock(stock5);
+		stockDao.agregarStock(stock6);
+		stockDao.agregarStock(stock7);
+		stockDao.agregarStock(stock8);
+		stockDao.agregarStock(stock9);
+		stockDao.agregarStock(stock10);
+		stockDao.agregarStock(stock11);
+		stockDao.agregarStock(stock12);
+		stockDao.agregarStock(stock13);
+		stockDao.agregarStock(stock14);
+		stockDao.agregarStock(stock15);
+		stockDao.agregarStock(stock16);
+		
+		
+		// PRECARGA DE USUARIO VENDEDOR
+		
+		Usuario vendedor = new Usuario(44949820,"maraz","agustina","alto comedero",LocalDate.of(2003, 07, 26),
+		"agus@com","123",rolDao.buscarRolPorId(1L));
+		usuarioDao.agregarUsuario(vendedor);
+		
+		*/
+		
 		
 		Usuario usuario = new Usuario();
-		
+		Scanner scanner = new Scanner(System.in);
+		String email,contrasena,seguir;
+		int opcion;
 		
 		do {
 			System.out.println("\n------------------ Iniciar Sesión ----------------");
@@ -109,13 +139,9 @@ public class Principal {
 			email = scanner.next();
 			System.out.println("Ingrese su contraseña: ");
 			contrasena = scanner.next();
-
-			usuario = usuarioDao.obtenerUsuarioPorCredenciales(email); //falta agregar contrasena en el metodo 
-
-			if (usuario == null) {
-				System.out.println("¡UPS! Usted no se encuentra registrado en el sistema");
-			}else {
-				System.out.println(usuario);
+			try {
+				usuario = usuarioDao.obtenerUsuarioPorCredenciales(email,contrasena);
+				
 				
 				if(usuario.getRol().getDescripcion().equals("Vendedor")) {
 					do {
@@ -154,21 +180,24 @@ public class Principal {
 							
 							break;
 						case 2:
-							
+						
+							Factura factura = new Factura();
+							factura.setNumeroFactura((int)(Math. random()*100+1));
+							factura.setFecha(LocalDate.now());
 							System.out.println("*********** LISTA DE USUARIOS PARA REALIZAR VENTA ***********");
 							System.out.println(usuarioDao.obtenerUsuariosClientes());
 							System.out.println("\nIngrese el Id del usuario al que desea realizar la venta: ");
-							usuario = usuarioDao.obtenerUsuario(scanner.nextLong());
+							
+							do {
+								usuario = usuarioDao.obtenerUsuario(scanner.nextLong());
+								if(usuario==null) {
+									System.out.println("Id no encontrado, intente con otro");
+								}
+							}while(usuario==null);
 							
 							
-							Factura factura = new Factura();
-							factura.setNumeroFactura((int)(Math. random()*100+1));
 							factura.setUsuario(usuario);
-							factura.setFecha(LocalDate.now());
 							
-							
-							
-							//List<Detalle> lineas = new ArrayList<Detalle>();
 							
 							do {
 								
@@ -178,62 +207,95 @@ public class Principal {
 								
 								System.out.println("--------------- LISTA DE PRODUCTOS A LA VENTA ---------------");
 								productoDao.obtenerProductos().stream().forEach(System.out::println);
-								System.out.println("\nDigite codigo del producto que desea comprar: ");
-								Long codigo = scanner.nextLong();
-								Producto prod = productoDao.obtenerProducto(codigo);
+								System.out.println("\nDigite el ID del producto que desea comprar: ");
+								Long idProducto = scanner.nextLong();
+								Producto prod = productoDao.obtenerProducto(idProducto);
 								
 								if(prod==null) {
 									System.out.println("¡¡EL CODIGO NO COINCIDE CON NINGUNO PRODUCTO!!");
 								}else {
-										System.out.println("¿Cuántas unidades desea comprar del producto seleccionado?");
+									
+										do {
+											System.out.println("¿Cuántas unidades desea comprar del producto seleccionado? INGRESE CANTIDAD VALIDA");
+											detalle.setCantidad(scanner.nextInt());
+										}while(detalle.getCantidad()<0);
 										
-										detalle.setCantidad(scanner.nextInt());
-										//band = CollectionStock.decrementarStockProducto(codigo, detalle.getCantidad());
-										//if(!band) {
-										//	System.out.println("No hay stock suficiente o ingreso una cantidad invalida");
-										//}else {
+										
+										Stock stock = stockDao.buscarStockPorIdProducto(idProducto);
+										boolean band = stockDao.decrementarStock(stock, detalle.getCantidad());
+										
+										if(!band) {
+											System.out.println(stock);
+											System.out.println("No hay stock suficiente del producto seleccionado");
+										}else {
+										
 											detalle.setProducto(prod);
 											detalle.setImporte(detalle.calcularImporte());
 											
-											//lineas.add(detalle);
-											
-											//factura.setDetalles(lineas);
-											
 											factura.agregarDetalle(detalle);
 											
+											System.out.println("\n\n ********************************* FACTURA **************************************");
+											factura.setTotal(factura.calcularTotal());
+											System.out.println(factura);
+											System.out.println("\n");
+											
+											
+											facturaDao.agregarFactura(factura);
+											detalleDao.agregarDetalle(detalle);
+										}
 										
-										//}
 										
-										System.out.println("\n\n ********************************* FACTURA **************************************");
-										factura.setTotal(factura.calcularTotal());
-										System.out.println(factura);
-										System.out.println("\n\n");
-										
-										
-										facturaDao.agregarFactura(factura);
-										detalleDao.agregarDetalle(detalle);
 								}
+								
 								
 								System.out.println("\n\n¿Desea comprar otro producto? SI/NO");
 								seguir = scanner.next();
 							}while(seguir.equals("SI")||seguir.equals("si")||seguir.equals("s"));
 							
+							int pago;
 							
+							do {
+								System.out.println("Total a pagar: "+factura.getTotal());
+								System.out.println("Digite la cantidad que va a abonar en efectivo: ");
+								pago = scanner.nextInt();
+								
+								if(pago>=factura.getTotal()) {
+									System.out.println("\n\n ********************************* FACTURA **************************************");
+									System.out.println(factura);
+									System.out.println("**************************************** PAGADO ***************************************");
+								}else {
+									System.out.println("\n¡Cantidad de dinero insucifiente para pagar la factura!\n");
+									//facturaDao.eliminarFactura(factura);
+								}
+							}while(pago<factura.getTotal());
+						
 							break;
 						case 3:
-							System.out.println(usuarioDao.obtenerUsuariosClientes());
+							if(usuarioDao.obtenerUsuariosClientes()==null) {
+								System.out.println("No hay clientes cargados");
+							}else {
+								System.out.println(usuarioDao.obtenerUsuariosClientes());
+							}
 							break;
 						case 4:
-							System.out.println(facturaDao.obtenerFacturas());
+							/*try {
+								System.out.println(facturaDao.obtenerFacturas());
+							}catch(Exception e) {
+								System.out.println("No hay facturas realizadas");
+							}*/
+							if(facturaDao.obtenerFacturas()==null) {
+								System.out.println("No hay facturas realizadas");
+							}else {
+								System.out.println(facturaDao.obtenerFacturas());
+							}
 							break;
 						case 5:
-							System.out.println("Digite el numero de factura: ");
-							Factura encontrada = new Factura();
-							encontrada=facturaDao.buscarFacturaPorNumeroFactura(scanner.nextInt());
-							if(encontrada==null){
+							
+							try{
+								System.out.println("Digite el numero de factura: ");
+								System.out.println(facturaDao.buscarFacturaPorNumeroFactura(scanner.nextInt()));
+							}catch(Exception e){
 								System.out.println("La factura ingresada no existe");
-							}else {
-								System.out.println(encontrada);
 							}
 							break;
 						case 6:
@@ -249,7 +311,7 @@ public class Principal {
 				}else if(usuario.getRol().getDescripcion().equals("Cliente")){
 					do {
 						System.out.println("\n------------------ MENÚ CLIENTE ----------------");
-						System.out.println("1. Buscar una factura por número de factura");
+						System.out.println("1. Buscar una de mis factura por número de factura");
 						System.out.println("2. Mostrar todas mis facturas");
 						System.out.println("3. Salir");
 						System.out.println("Ingrese opción: ");
@@ -257,10 +319,17 @@ public class Principal {
 						
 						switch (opcion) {
 						case 1:
+							System.out.println("Digite su número de factura: ");
+							Factura factura = facturaDao.obtenerFacturaPorIdYNumeroFactura(usuario.getIdUsuario(), scanner.nextInt());
+							if(factura==null) {
+								System.out.println("No se encontró su factura");
+							}else {
+								System.out.println(factura);
+							}
 							
 							break;
 						case 2:
-							
+							System.out.println(facturaDao.obtenerFacturasPorId(usuario.getIdUsuario()));
 							break;
 						case 3:
 							System.out.println("Usted ha salido del programa");
@@ -274,8 +343,13 @@ public class Principal {
 					}while(opcion!=3);
 				}
 				
+				
+			}catch(NoResultException nre) {
+				System.out.println("¡UPS! Usted no se encuentra registrado en el sistema\nCorreo o contraseña inválidos");
 			}
-
+			
+			
+			
 			System.out.println("\n¿Desea iniciar sesion nuevamente o con otro usuario? si/no");
 			seguir = scanner.next();
 		} while (seguir.equals("SI") || seguir.equals("si") || seguir.equals("s"));

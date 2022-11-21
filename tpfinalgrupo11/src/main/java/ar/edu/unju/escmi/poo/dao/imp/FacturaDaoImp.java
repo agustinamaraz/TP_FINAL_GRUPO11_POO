@@ -40,4 +40,28 @@ public class FacturaDaoImp implements IFacturaDao{
 		return facturas;
 	}
 
+	@Override
+	public Factura obtenerFacturasPorId(Long id) {
+		Query query = manager.createQuery("SELECT f FROM Factura f WHERE f.usuario.idUsuario = :id");
+		query.setParameter("id", id);
+		Factura factura = (Factura) query.getSingleResult();
+		return factura;
+	}
+
+	@Override
+	public Factura obtenerFacturaPorIdYNumeroFactura(Long id, int nroFactura) {
+		Query query = manager.createQuery("SELECT f FROM Factura f WHERE f.usuario.idUsuario = :id AND f.numeroFactura = :nroFactura");
+		query.setParameter("id", id);
+		query.setParameter("nroFactura", nroFactura);
+		Factura factura = (Factura) query.getSingleResult();
+		return factura;
+	}
+
+	@Override
+	public void eliminarFactura(Factura factura) {
+		manager.getTransaction().begin();
+		manager.remove(factura);
+		manager.getTransaction().commit();
+	}
+
 }
