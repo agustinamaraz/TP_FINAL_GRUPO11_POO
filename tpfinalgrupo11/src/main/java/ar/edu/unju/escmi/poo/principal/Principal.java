@@ -2,6 +2,8 @@ package ar.edu.unju.escmi.poo.principal;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 import javax.persistence.NoResultException;
@@ -131,7 +133,8 @@ public class Principal {
 		Usuario usuario = new Usuario();
 		Scanner scanner = new Scanner(System.in);
 		String email,contrasena,seguir;
-		int opcion;
+		int opcion=0;
+		boolean error,repetido;
 		
 		do {
 			System.out.println("\n------------------ Iniciar Sesión ----------------");
@@ -145,202 +148,269 @@ public class Principal {
 				
 				if(usuario.getRol().getDescripcion().equals("Vendedor")) {
 					do {
-						System.out.println("\n------------------ MENÚ VENDEDOR ----------------");
-						System.out.println("1. Alta de cliente");
-						System.out.println("2. Realizar venta");
-						System.out.println("3. Mostrar todos los clientes cargados");
-						System.out.println("4. Mostrar todas las facturas realizadas");
-						System.out.println("5. Buscar una factura por numero de factura");
-						System.out.println("6. Salir");
-						System.out.println("Ingrese opción: ");
-						opcion = scanner.nextInt();
-						
-						switch (opcion) {
-						case 1:
-							Usuario nuevoUsuario = new Usuario();
-							System.out.println("Ingrese dni");
-							nuevoUsuario.setDni(scanner.nextInt());
-							System.out.println("Ingrese nombre");
-							nuevoUsuario.setNombre(scanner.next());
-							System.out.println("Ingrese apellido");
-							nuevoUsuario.setApellido(scanner.next());
-							System.out.println("Ingrese domicilio");
-							nuevoUsuario.setDomicilio(scanner.next());
-							System.out.println("Ingrese fecha de nacimiento (dd/mm/yyyy)");
-							String fechaNac = scanner.next();
-							DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-							nuevoUsuario.setFechaNacimiento(LocalDate.parse(fechaNac, formato));
-							System.out.println("Ingrese correo electrónico");
-							nuevoUsuario.setEmail(scanner.next());
-							System.out.println("Ingrese contreña");
-							nuevoUsuario.setContrasena(scanner.next());
-							nuevoUsuario.setRol(rolDao.buscarRolPorId(2L));
+						error=false;
+						try {
+							System.out.println("\n------------------ MENÚ VENDEDOR ----------------");
+							System.out.println("1. Alta de cliente");
+							System.out.println("2. Realizar venta");
+							System.out.println("3. Mostrar todos los clientes cargados");
+							System.out.println("4. Mostrar todas las facturas realizadas");
+							System.out.println("5. Buscar una factura por numero de factura");
+							System.out.println("6. Salir");
+							System.out.println("Ingrese opción: ");
+							opcion = scanner.nextInt();
 							
-							usuarioDao.agregarUsuario(nuevoUsuario);
-							
-							break;
-						case 2:
-						
-							Factura factura = new Factura();
-							factura.setNumeroFactura((int)(Math. random()*100+1));
-							factura.setFecha(LocalDate.now());
-							System.out.println("*********** LISTA DE USUARIOS PARA REALIZAR VENTA ***********");
-							System.out.println(usuarioDao.obtenerUsuariosClientes());
-							System.out.println("\nIngrese el Id del usuario al que desea realizar la venta: ");
-							
-							do {
-								usuario = usuarioDao.obtenerUsuario(scanner.nextLong());
-								if(usuario==null) {
-									System.out.println("Id no encontrado, intente con otro");
-								}
-							}while(usuario==null);
-							
-							
-							factura.setUsuario(usuario);
-							
-							
-							do {
+							switch (opcion) {
+							case 1:
+								Usuario nuevoUsuario = new Usuario();
+								do {
+									error=false;
+									try {
+										System.out.println("Ingrese dni");
+										nuevoUsuario.setDni(scanner.nextInt());
+									}catch(InputMismatchException ime) {
+										System.out.println("¡Error! No ingrese letras o palabras");
+										error=true;
+										scanner.next();
+									}
+								}while(error==true);
 								
-								Detalle detalle = new Detalle();
+								System.out.println("Ingrese nombre");
+								nuevoUsuario.setNombre(scanner.next());
+								System.out.println("Ingrese apellido");
+								nuevoUsuario.setApellido(scanner.next());
+								System.out.println("Ingrese domicilio");
+								nuevoUsuario.setDomicilio(scanner.next());
 								
-								detalle.setFactura(factura);
-								
-								System.out.println("--------------- LISTA DE PRODUCTOS A LA VENTA ---------------");
-								productoDao.obtenerProductos().stream().forEach(System.out::println);
-								System.out.println("\nDigite el ID del producto que desea comprar: ");
-								Long idProducto = scanner.nextLong();
-								Producto prod = productoDao.obtenerProducto(idProducto);
-								
-								if(prod==null) {
-									System.out.println("¡¡EL CODIGO NO COINCIDE CON NINGUNO PRODUCTO!!");
-								}else {
+								do {
+									error=false;
+									try {
+										System.out.println("Ingrese fecha de nacimiento (dd/mm/yyyy)");
+										String fechaNac = scanner.next();
+										DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+										nuevoUsuario.setFechaNacimiento(LocalDate.parse(fechaNac, formato));
+									}catch(DateTimeParseException dtpe) {
+										System.out.println("¡Error! Ingrese la fecha con el formato: dd/MM/yyyy");
+										error=true;
+									}
+								}while(error==true);
+								do {
+									repetido=false;
+									System.out.println("Ingrese correo electrónico");
+									nuevoUsuario.setEmail(scanner.next());
 									
-										do {
-											System.out.println("¿Cuántas unidades desea comprar del producto seleccionado? INGRESE CANTIDAD VALIDA");
-											detalle.setCantidad(scanner.nextInt());
-										}while(detalle.getCantidad()<0);
-										
-										
-										Stock stock = stockDao.buscarStockPorIdProducto(idProducto);
-										boolean band = stockDao.decrementarStock(stock, detalle.getCantidad());
-										
-										if(!band) {
-											System.out.println(stock);
-											System.out.println("No hay stock suficiente del producto seleccionado");
-										}else {
-										
-											detalle.setProducto(prod);
-											detalle.setImporte(detalle.calcularImporte());
-											
-											factura.agregarDetalle(detalle);
-											
-											System.out.println("\n\n ********************************* FACTURA **************************************");
-											factura.setTotal(factura.calcularTotal());
-											System.out.println(factura);
-											System.out.println("\n");
-											
-											
-											facturaDao.agregarFactura(factura);
-											detalleDao.agregarDetalle(detalle);
+									for(int i=0;i<usuarioDao.obtenerUsuarios().size();i++) {
+										if(nuevoUsuario.getEmail().equals(usuarioDao.obtenerUsuarios().get(i).getEmail())) {
+											repetido=true;
 										}
-										
-										
-								}
+									}
+									
+									if(repetido==true) {
+										System.out.println("Email ya registrado, ingrese uno distinto");
+									}
+									
+								}while(repetido==true);
 								
+			
+								System.out.println("Ingrese contreña");
+								nuevoUsuario.setContrasena(scanner.next());
+								nuevoUsuario.setRol(rolDao.buscarRolPorId(2L));
 								
-								System.out.println("\n\n¿Desea comprar otro producto? SI/NO");
-								seguir = scanner.next();
-							}while(seguir.equals("SI")||seguir.equals("si")||seguir.equals("s"));
+								usuarioDao.agregarUsuario(nuevoUsuario);
+								
+								break;
+							case 2:
 							
-							int pago;
-							
-							do {
-								System.out.println("Total a pagar: "+factura.getTotal());
-								System.out.println("Digite la cantidad que va a abonar en efectivo: ");
-								pago = scanner.nextInt();
-								
-								if(pago>=factura.getTotal()) {
-									System.out.println("\n\n ********************************* FACTURA **************************************");
-									System.out.println(factura);
-									System.out.println("**************************************** PAGADO ***************************************");
-								}else {
-									System.out.println("\n¡Cantidad de dinero insucifiente para pagar la factura!\n");
-									//facturaDao.eliminarFactura(factura);
-								}
-							}while(pago<factura.getTotal());
-						
-							break;
-						case 3:
-							if(usuarioDao.obtenerUsuariosClientes()==null) {
-								System.out.println("No hay clientes cargados");
-							}else {
+								Factura factura = new Factura();
+								factura.setNumeroFactura((int)(Math. random()*100+1));
+								factura.setFecha(LocalDate.now());
+								System.out.println("*********** LISTA DE USUARIOS PARA REALIZAR VENTA ***********");
 								System.out.println(usuarioDao.obtenerUsuariosClientes());
-							}
-							break;
-						case 4:
-							/*try {
-								System.out.println(facturaDao.obtenerFacturas());
-							}catch(Exception e) {
-								System.out.println("No hay facturas realizadas");
-							}*/
-							if(facturaDao.obtenerFacturas()==null) {
-								System.out.println("No hay facturas realizadas");
-							}else {
-								System.out.println(facturaDao.obtenerFacturas());
-							}
-							break;
-						case 5:
+								System.out.println("\nIngrese el Id del usuario al que desea realizar la venta: ");
+								
+								do {
+									usuario = usuarioDao.obtenerUsuario(scanner.nextLong());
+									if(usuario==null) {
+										System.out.println("Id no encontrado, intente con otro");
+									}
+								}while(usuario==null);
+								
+								
+								factura.setUsuario(usuario);
+								int cantidad;
+								
+								do {
+									
+									Detalle detalle = new Detalle();
+									
+									detalle.setFactura(factura);
+									
+									System.out.println("--------------- LISTA DE PRODUCTOS A LA VENTA ---------------");
+									productoDao.obtenerProductos().stream().forEach(System.out::println);
+									System.out.println("\nDigite el ID del producto que desea comprar: ");
+									Long idProducto = scanner.nextLong();
+									Producto prod = productoDao.obtenerProducto(idProducto);
+									
+									if(prod==null) {
+										System.out.println("¡¡EL CODIGO NO COINCIDE CON NINGUNO PRODUCTO!!");
+									}else {
+										
+											do {
+												System.out.println("¿Cuántas unidades desea comprar del producto seleccionado? INGRESE CANTIDAD VALIDA");
+												cantidad=scanner.nextInt();
+												detalle.setCantidad(cantidad);
+											}while(cantidad<0);
+											
+											
+											Stock stock = stockDao.buscarStockPorIdProducto(idProducto);
+											boolean band = stockDao.decrementarStock(stock, cantidad);
+											
+											if(!band) {
+												System.out.println(stock);
+												System.out.println("No hay stock suficiente del producto seleccionado");
+											}else {
+											
+												detalle.setProducto(prod);
+												
+												switch(prod.getDescuento()) {
+													case 0:
+														detalle.setImporte(detalle.calcularImporte());
+														break;
+													case 25:
+														detalle.setImporte(detalle.calcularImporte()*0.25);
+														break;
+													case 30:
+														detalle.setImporte(detalle.calcularImporte()*0.3);
+														break;
+												}
+												
+												
+												factura.agregarDetalle(detalle);
+												
+												System.out.println("\n\n ********************************* FACTURA **************************************");
+												factura.setTotal(factura.calcularTotal());
+												
+												System.out.println(factura);
+												System.out.println("\n");
+												
+												
+												facturaDao.agregarFactura(factura);
+												facturaDao.modificarFactura(factura); // necesario para que no salte una excepcion debido a la siguiente linea
+												detalleDao.agregarDetalle(detalle);
+											}
+											
+											
+									}
+									
+									
+									System.out.println("\n¿Desea comprar otro producto? SI/NO");
+									seguir = scanner.next();
+								}while(seguir.equals("SI")||seguir.equals("si")||seguir.equals("s"));
+								
+								int pago=0;
+								
+								do {
+									error=false;
+									try {
+										System.out.println("Total a pagar: "+factura.getTotal());
+										System.out.println("Digite la cantidad que va a abonar en efectivo: ");
+										pago = scanner.nextInt();
+										
+										if(pago==factura.getTotal()) {
+											System.out.println("\n\n********************************* FACTURA **************************************");
+											System.out.println(factura);
+											System.out.println("************************************* PAGADO ************************************");
+										}else {
+											System.out.println("\n¡Ingrese la cantidad justa de dinero para pagar la factura!\n");
+										}
+									}catch(InputMismatchException ime) {
+										System.out.println("¡Error! No ingrese letras o palabras");
+										error=true;
+										scanner.next();
+									}
+									
+								}while(pago<factura.getTotal()||pago>factura.getTotal()||error==true);
 							
-							try{
-								System.out.println("Digite el numero de factura: ");
-								System.out.println(facturaDao.buscarFacturaPorNumeroFactura(scanner.nextInt()));
-							}catch(Exception e){
-								System.out.println("La factura ingresada no existe");
-							}
-							break;
-						case 6:
-							System.out.println("Usted ha salido del programa");
-							break;
+								break;
+							case 3:
+								if(usuarioDao.obtenerUsuariosClientes()==null) {
+									System.out.println("No hay clientes cargados");
+								}else {
+									System.out.println(usuarioDao.obtenerUsuariosClientes());
+								}
+								break;
+							case 4:
+								try {
+									System.out.println(facturaDao.obtenerFacturas());
+								}catch(Exception e) {
+									System.out.println("No hay facturas realizadas");
+								}
+								break;
+							case 5:
+								try{
+									System.out.println("Digite el numero de factura: ");
+									System.out.println(facturaDao.buscarFacturaPorNumeroFactura(scanner.nextInt()));
+								}catch(Exception e){
+									System.out.println("La factura ingresada no existe");
+								}
+								break;
+							case 6:
+								System.out.println("Usted ha salido del programa");
+								break;
 
-						default:
-							System.out.println("opción incorrecta");
-							break;
+							default:
+								System.out.println("opción incorrecta");
+								break;
+							}
+						}catch(InputMismatchException ime) {
+							System.out.println("¡Error! No ingrese letras o palabras");
+							error=true;
+							scanner.next();
 						}
 						
-					}while(opcion!=6);
+						
+					}while(opcion!=6 || error==true);
 				}else if(usuario.getRol().getDescripcion().equals("Cliente")){
 					do {
-						System.out.println("\n------------------ MENÚ CLIENTE ----------------");
-						System.out.println("1. Buscar una de mis factura por número de factura");
-						System.out.println("2. Mostrar todas mis facturas");
-						System.out.println("3. Salir");
-						System.out.println("Ingrese opción: ");
-						opcion = scanner.nextInt();
-						
-						switch (opcion) {
-						case 1:
-							System.out.println("Digite su número de factura: ");
-							Factura factura = facturaDao.obtenerFacturaPorIdYNumeroFactura(usuario.getIdUsuario(), scanner.nextInt());
-							if(factura==null) {
-								System.out.println("No se encontró su factura");
-							}else {
-								System.out.println(factura);
-							}
+						error=false;
+						try {
+							System.out.println("\n------------------ MENÚ CLIENTE ----------------");
+							System.out.println("1. Buscar una de mis factura por número de factura");
+							System.out.println("2. Mostrar todas mis facturas");
+							System.out.println("3. Salir");
+							System.out.println("Ingrese opción: ");
+							opcion = scanner.nextInt();
 							
-							break;
-						case 2:
-							System.out.println(facturaDao.obtenerFacturasPorId(usuario.getIdUsuario()));
-							break;
-						case 3:
-							System.out.println("Usted ha salido del programa");
-							break;
+							switch (opcion) {
+							case 1:
+								System.out.println("Digite su número de factura: ");
+								Factura factura = facturaDao.obtenerFacturaPorIdYNumeroFactura(usuario.getIdUsuario(), scanner.nextInt());
+								if(factura==null) {
+									System.out.println("No se encontró su factura");
+								}else {
+									System.out.println(factura);
+								}
+								
+								break;
+							case 2:
+								System.out.println(facturaDao.obtenerFacturasPorId(usuario.getIdUsuario()));
+								break;
+							case 3:
+								System.out.println("Usted ha salido del programa");
+								break;
 
-						default:
-							System.out.println("opción incorrecta");
-							break;
+							default:
+								System.out.println("opción incorrecta");
+								break;
+							}
+						}catch(InputMismatchException ime) {
+							System.out.println("¡Error! No ingrese letras o palabras");
+							error=true;
+							scanner.next();
 						}
 						
-					}while(opcion!=3);
+						
+					}while(opcion!=3 || error==true);
 				}
 				
 				

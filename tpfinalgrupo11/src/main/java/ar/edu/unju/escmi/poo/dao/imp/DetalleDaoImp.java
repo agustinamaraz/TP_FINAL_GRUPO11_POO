@@ -11,13 +11,13 @@ public class DetalleDaoImp implements IDetalleDao {
 	
 	@Override
 	public void agregarDetalle(Detalle nuevoDetalle) {
-		try {
+		//7try {
 			manager.getTransaction().begin();
 			manager.persist(nuevoDetalle);
 			manager.getTransaction().commit();
-		}catch(Exception e) {
-			System.out.println(e);
-		}
+		//}catch(Exception e) {
+			//System.out.println(e);
+		//}
 		
 	}
 
