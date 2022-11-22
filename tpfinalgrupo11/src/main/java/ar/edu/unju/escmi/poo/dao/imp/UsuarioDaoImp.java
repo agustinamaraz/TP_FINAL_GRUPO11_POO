@@ -26,27 +26,11 @@ public class UsuarioDaoImp implements IUsuarioDao {
 	}
 
 	@Override
-	public void eliminarUsuario(Usuario usuario) {
-		// TODO Auto-generated method stub
-		manager.getTransaction().begin();
-		manager.remove(usuario);
-		manager.getTransaction().commit();	
-	}
-
-	@Override
 	public List<Usuario> obtenerUsuarios() {
 		// TODO Auto-generated method stub
 		@SuppressWarnings("unchecked")
 		List<Usuario> usuarios = (List<Usuario>) manager.createQuery("SELECT u FROM Usuario u").getResultList();
 		return usuarios;
-	}
-
-	@Override
-	public void modificarUsuario(Usuario usuario) {
-		// TODO Auto-generated method stub
-		manager.getTransaction().begin();
-		manager.merge(usuario);
-		manager.getTransaction().commit();	
 	}
 
 	@Override

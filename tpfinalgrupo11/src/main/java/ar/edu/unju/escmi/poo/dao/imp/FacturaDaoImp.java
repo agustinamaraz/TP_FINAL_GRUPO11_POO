@@ -59,13 +59,6 @@ public class FacturaDaoImp implements IFacturaDao{
 	}
 
 	@Override
-	public void eliminarFactura(Factura factura) {
-		manager.getTransaction().begin();
-		manager.remove(factura);
-		manager.getTransaction().commit();
-	}
-
-	@Override
 	public void modificarFactura(Factura factura) {
 		manager.getTransaction().begin();
 		manager.merge(factura);

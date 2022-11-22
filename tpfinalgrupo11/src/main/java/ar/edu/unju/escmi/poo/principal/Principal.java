@@ -38,7 +38,7 @@ public class Principal {
 		IFacturaDao facturaDao = new FacturaDaoImp();
 		IDetalleDao detalleDao = new DetalleDaoImp();
 		
-		/*
+		/* DESCOMENTAR SI SE CREA POR PRIMERA VEZ Y VOLVER A COMENTAR LUEGO
 		  
 		// PRECARGA DE ROLES
 		
@@ -126,7 +126,7 @@ public class Principal {
 		"agus@com","123",rolDao.buscarRolPorId(1L));
 		usuarioDao.agregarUsuario(vendedor);
 		
-		*/
+		COMENTAR HASTA ACA*/
 		
 		
 		Usuario usuario = new Usuario();
@@ -211,7 +211,7 @@ public class Principal {
 								}while(repetido==true);
 								
 			
-								System.out.println("Ingrese contreña");
+								System.out.println("Ingrese contraseña");
 								nuevoUsuario.setContrasena(scanner.next());
 								nuevoUsuario.setRol(rolDao.buscarRolPorId(2L));
 								
@@ -382,17 +382,24 @@ public class Principal {
 							
 							switch (opcion) {
 							case 1:
-								System.out.println("Digite su número de factura: ");
-								Factura factura = facturaDao.obtenerFacturaPorIdYNumeroFactura(usuario.getIdUsuario(), scanner.nextInt());
-								if(factura==null) {
-									System.out.println("No se encontró su factura");
-								}else {
+							{
+								try {
+									System.out.println("Digite su número de factura: ");
+									Factura factura = facturaDao.obtenerFacturaPorIdYNumeroFactura(usuario.getIdUsuario(), scanner.nextInt());
 									System.out.println(factura);
+								}catch(Exception e) {
+									System.out.println("No se encontró su factura");
+								}
+													
+								break;
+							}
+							case 2:
+								try {
+									System.out.println(facturaDao.obtenerFacturasPorId(usuario.getIdUsuario()));
+								}catch(Exception e) {
+									System.out.println("no se encontró el nro de factura ingresado");
 								}
 								
-								break;
-							case 2:
-								System.out.println(facturaDao.obtenerFacturasPorId(usuario.getIdUsuario()));
 								break;
 							case 3:
 								System.out.println("Usted ha salido del programa");

@@ -7,7 +7,7 @@ import javax.persistence.EntityManager;
 import ar.edu.unju.escmi.poo.config.EmfSingleton;
 import ar.edu.unju.escmi.poo.dao.IProductoDao;
 import ar.edu.unju.escmi.poo.dominio.Producto;
-import ar.edu.unju.escmi.poo.dominio.Usuario;
+
 
 public class ProductoDaoImp implements IProductoDao{
 	private static EntityManager manager = EmfSingleton.getInstance().getEmf().createEntityManager();
@@ -21,13 +21,6 @@ public class ProductoDaoImp implements IProductoDao{
 		}catch(Exception e) {
 			System.out.println(e);
 		}
-		
-	}
-
-	@Override
-	public void eliminarProducto(Producto producto) {
-		manager.getTransaction().begin();
-		manager.remove(producto);
 		
 	}
 

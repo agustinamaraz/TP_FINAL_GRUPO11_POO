@@ -11,6 +11,5 @@ public interface IFacturaDao {
 	public Factura obtenerFacturaPorIdYNumeroFactura(Long id, int nroFactura);
 	public List<Factura> obtenerFacturas();
 	public List<Factura> obtenerFacturasPorId(Long id);
-	public void eliminarFactura(Factura factura);
 	public void modificarFactura(Factura factura);
 }
