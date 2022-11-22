@@ -49,6 +49,7 @@ class FacturaTest {
 		factura.setFecha(LocalDate.now());
 		Rol rol = new Rol();
 		rol.setDescripcion(rolDao.buscarRolPorId(2L).getDescripcion());
+		usuario.setRol(rol);
 		factura.setUsuario(usuario);
 		producto = productoDao.obtenerProducto(10L);
 		detalles.add(new Detalle(3,producto,producto.getPrecioUnitario()*3));
