@@ -39,8 +39,7 @@ public class Principal {
 		IDetalleDao detalleDao = new DetalleDaoImp();
 		
 		/*
-		 * 
-		 * 
+		  
 		// PRECARGA DE ROLES
 		
 		Rol rolVendedor = new Rol();
@@ -56,18 +55,18 @@ public class Principal {
 		Producto producto2 = new Producto("Heladera","CICLICA",30000.0,"CHIINA","SAMSUNG",0);
 		Producto producto3 = new Producto("Heladera","NO FROST",22200.0,"PERU","CANON",0);
 		Producto producto4 = new Producto("Heladera","Heladera con Freezer 414 lts acero",40000.0,"CHILE","BRIKET",0);
-		Producto producto5 = new Producto("Televisor","TV MOTOROLA 50",30000.0,"ARGENTINA","LG",0);
+		Producto producto5 = new Producto("Televisor","TV MOTOROLA 50",30000.0,"ARGENTINA","LG",25);
 		Producto producto6 = new Producto("Televisor","TV.LED 55",49999.0,"PARAGUAY","NOKIA",0);
 		Producto producto7 = new Producto("Televisor","TV.LED 873",55000.0,"ARGENTINA","LG",0);
 		Producto producto8 = new Producto("Televisor","Smart TV 4K 50",20000.0,"ARGENTINA","LG",0);
 		Producto producto9 = new Producto("Lavarropas","Lavarropas semi 7 kgs",20000.0,"BOLIVIA","BRIKET",0);
-		Producto producto10 = new Producto("Lavarropas","NEXT 10·12 P ECO",30000.0,"ARGENTINA","LILIANA",0);
-		Producto producto11 = new Producto("Lavarropas","LAVARROPAS CARGA SUPERIOR DIGI FIT BLANCO",40000.0,"CHILE","BRIKET",0);
+		Producto producto10 = new Producto("Lavarropas","NEXT 10·12 P ECO",30000.0,"ARGENTINA","LILIANA",30);
+		Producto producto11 = new Producto("Lavarropas","LAVARROPAS CARGA SUPERIOR DIGI FIT BLANCO",40000.0,"CHILE","BRIKET",25);
 		Producto producto12 = new Producto("Lavarropas","LAVARROPAS CARGA SUPERIOR GAFA FUZZY FIT PLATA",55000.0,"CHINA","Samsung",0);
-		Producto producto13 = new Producto("Celular","SM-A325/4+128",25000.0,"CHINA","XIAOMI",0);
-		Producto producto14 = new Producto("Celular","Moto G52 Negro Azul",30200.0,"ARGENTINA","Motorola",0);
+		Producto producto13 = new Producto("Celular","SM-A325/4+128",25000.0,"CHINA","XIAOMI",25);
+		Producto producto14 = new Producto("Celular","Moto G52 Negro Azul",30200.0,"ARGENTINA","Motorola",30);
 		Producto producto15 = new Producto("Celular","Smartphone 6",60000.0,"CHINA","Samsung",0);
-		Producto producto16 = new Producto("Celular","Moto G41 Negro Onix",70000.0,"JAPON","Motorola",0);
+		Producto producto16 = new Producto("Celular","Moto G41 Negro Onix",70000.0,"JAPON","Motorola",25);
 		productoDao.agregarProducto(producto1);
 		productoDao.agregarProducto(producto2);
 		productoDao.agregarProducto(producto3);
