@@ -34,7 +34,7 @@ public class Factura implements Serializable{
 	@Column(name="total")
 	private double total;
 	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "factura")
+	@OneToMany(cascade = CascadeType.MERGE, mappedBy = "factura")
 	private List<Detalle> detalles = new ArrayList<Detalle>();
 	
 	@OneToOne(fetch = FetchType.LAZY)

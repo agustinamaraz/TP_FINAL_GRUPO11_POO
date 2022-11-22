@@ -2,8 +2,8 @@ package ar.edu.unju.escmi.poo.dominio;
 
 import java.io.Serializable;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.Embeddable;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -16,7 +16,6 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name="detalles")
-//@Embeddable
 public class Detalle implements Serializable{
 	private static final long serialVersionUID = 1L;
 
